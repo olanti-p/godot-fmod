@@ -1,3 +1,4 @@
-[submodule "addons/FMOD/native/godot-cpp"]
-	path = addons/FMOD/native/godot-cpp
+[submodule "addons/fmod/native/godot-cpp"]
+	path = addons/fmod/native/godot-cpp
 	url = https://github.com/godotengine/godot-cpp.git
+	branch = 4.3

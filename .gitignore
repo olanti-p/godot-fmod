@@ -15,9 +15,14 @@ data_*/
 mono_crash.*.json
 
 .DS_Store
-addons/FMOD/native/src/**/*.obj
-addons/FMOD/native/src/**/*.os
-addons/FMOD/native/src/**/*.o
-addons/FMOD/tests/fmod_test_project/.user
-addons/FMOD/tests/fmod_test_project/.unsaved
-addons/FMOD/editor/cache/fmod_project_cache.tres
+addons/fmod/native/src/**/*.obj
+addons/fmod/native/src/**/*.os
+addons/fmod/native/src/**/*.o
+addons/fmod/tests/fmod_test_project/.user
+addons/fmod/tests/fmod_test_project/.unsaved
+addons/fmod/editor/cache/fmod_project_cache.tres
+
+.sconsign.dblite
+.idea
+addons/fmod/native/lib
+addons/fmod/native/compile_commands.json
