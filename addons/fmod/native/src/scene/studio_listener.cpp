@@ -51,7 +51,9 @@ void ListenerImpl::remove_listener() {
     }
 }
 
-int ListenerImpl::get_listener_count() { return listeners.size(); }
+int ListenerImpl::get_listener_count() {
+    return listeners.size();
+}
 
 void ListenerImpl::set_listener_location() {
     int listener_index = get_num_listener();
@@ -106,9 +108,13 @@ float ListenerImpl::distance_to_nearest_listener(const Variant& position) {
     return result;
 }
 
-void ListenerImpl::_enter_tree() { add_listener(); }
+void ListenerImpl::_enter_tree() {
+    add_listener();
+}
 
-void ListenerImpl::_exit_tree() { remove_listener(); }
+void ListenerImpl::_exit_tree() {
+    remove_listener();
+}
 
 void ListenerImpl::_process(double p_delta) {
     if (get_num_listener() >= 0 && get_num_listener() < MAX_LISTENERS) {
@@ -158,19 +164,33 @@ void StudioListener2D::_process(double p_delta) {
     implementation._process(p_delta);
 }
 
-float StudioListener2D::distance_to_nearest_listener(const Vector2& position) { return ListenerImpl::distance_to_nearest_listener(position); }
+float StudioListener2D::distance_to_nearest_listener(const Vector2& position) {
+    return ListenerImpl::distance_to_nearest_listener(position);
+}
 
-void StudioListener2D::set_attenuation_object(Object* object) { implementation.attenuation_object = object; }
+void StudioListener2D::set_attenuation_object(Object* object) {
+    implementation.attenuation_object = object;
+}
 
-Object* StudioListener2D::get_attenuation_object() const { return implementation.attenuation_object; }
+Object* StudioListener2D::get_attenuation_object() const {
+    return implementation.attenuation_object;
+}
 
-void StudioListener2D::set_rigidbody(Object* object) { implementation.rigidbody = object; }
+void StudioListener2D::set_rigidbody(Object* object) {
+    implementation.rigidbody = object;
+}
 
-Object* StudioListener2D::get_rigidbody() const { return implementation.rigidbody; }
+Object* StudioListener2D::get_rigidbody() const {
+    return implementation.rigidbody;
+}
 
-void StudioListener2D::set_num_listener(int num) { notify_property_list_changed(); }
+void StudioListener2D::set_num_listener(int num) {
+    notify_property_list_changed();
+}
 
-int StudioListener2D::get_num_listener() { return implementation.get_num_listener(); }
+int StudioListener2D::get_num_listener() {
+    return implementation.get_num_listener();
+}
 
 void StudioListener3D::_bind_methods() {
     ClassDB::bind_static_method("StudioListener3D", D_METHOD("get_listener_count"), &StudioListener3D::get_listener_count);
@@ -215,18 +235,34 @@ void StudioListener3D::_process(double p_delta) {
     implementation._process(p_delta);
 }
 
-float StudioListener3D::distance_to_nearest_listener(const Vector3& position) { return ListenerImpl::distance_to_nearest_listener(position); }
+float StudioListener3D::distance_to_nearest_listener(const Vector3& position) {
+    return ListenerImpl::distance_to_nearest_listener(position);
+}
 
-int StudioListener3D::get_listener_count() { return ListenerImpl::get_listener_count(); }
+int StudioListener3D::get_listener_count() {
+    return ListenerImpl::get_listener_count();
+}
 
-void StudioListener3D::set_attenuation_object(Object* object) { implementation.attenuation_object = object; }
+void StudioListener3D::set_attenuation_object(Object* object) {
+    implementation.attenuation_object = object;
+}
 
-Object* StudioListener3D::get_attenuation_object() const { return implementation.attenuation_object; }
+Object* StudioListener3D::get_attenuation_object() const {
+    return implementation.attenuation_object;
+}
 
-void StudioListener3D::set_rigidbody(Object* object) { implementation.rigidbody = object; }
+void StudioListener3D::set_rigidbody(Object* object) {
+    implementation.rigidbody = object;
+}
 
-Object* StudioListener3D::get_rigidbody() const { return implementation.rigidbody; }
+Object* StudioListener3D::get_rigidbody() const {
+    return implementation.rigidbody;
+}
 
-void StudioListener3D::set_num_listener(int num) { notify_property_list_changed(); }
+void StudioListener3D::set_num_listener(int num) {
+    notify_property_list_changed();
+}
 
-int StudioListener3D::get_num_listener() { return implementation.get_num_listener(); }
+int StudioListener3D::get_num_listener() {
+    return implementation.get_num_listener();
+}

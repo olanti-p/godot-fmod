@@ -15,6 +15,7 @@ AlwaysBreakAfterReturnType: None
 AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
 BinPackParameters: false
+AllowShortFunctionsOnASingleLine: Empty
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: false
