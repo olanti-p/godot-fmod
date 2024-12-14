@@ -227,7 +227,7 @@ bool StudioEventEmitterImpl<T>::_property_get_revert(const StringName& p_name, V
 
 template<typename T>
 void StudioEventEmitterImpl<T>::play_instance() {
-    bool instance_is_valid = event_instance.is_valid();
+    bool instance_is_valid = event_instance.is_valid() && event_instance->is_valid();
 
     if (instance_is_valid && event->get_oneshot()) {
         event_instance->release();
