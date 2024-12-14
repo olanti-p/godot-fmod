@@ -147,6 +147,10 @@ jobs:
           tar -zxvf fmodstudioapi${{env.FMOD_VERSION}}${{matrix.fmod-executable-suffix}} --strip-components=1 -C ../fmodapi
           cd ../../../../
 
+      - name: Install NDK
+        if: runner.os == 'Linux' && matrix.api-platform == 'android'
+        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.ANDROID_NDK_VERSION }}" --sdk_root=${ANDROID_SDK_ROOT}
+
       - name: Compile Debug library
         shell: bash
         run: |
@@ -201,7 +205,7 @@ jobs:
           architecture: x64
 
       - name: Install NDK
-        run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;${{ env.ANDROID_NDK_VERSION }}" --sdk_root=${ANDROID_SDK_ROOT}
+        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.ANDROID_NDK_VERSION }}" --sdk_root=${ANDROID_SDK_ROOT}
 
       - name: Download FMOD library
         if: steps.cache-fmod-lib.outputs.cache-hit != 'true'
