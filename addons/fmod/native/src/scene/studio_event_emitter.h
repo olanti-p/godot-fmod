@@ -43,7 +43,6 @@ struct StudioEventEmitterImpl {
     void handle_game_event(RuntimeUtils::GameEvent game_event);
 
     void play();
-    void play_oneshot();
     void stop();
     void lookup();
     float get_max_distance();

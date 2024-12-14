@@ -431,17 +431,6 @@ void StudioEventEmitterImpl<T>::play() {
 }
 
 template<typename T>
-void StudioEventEmitterImpl<T>::play_oneshot() {
-    if (event.is_null()) {
-        return;
-    }
-
-    if (!event_description.is_valid()) {
-        lookup();
-    }
-}
-
-template<typename T>
 void StudioEventEmitterImpl<T>::stop() {
     stop_instance();
 }
