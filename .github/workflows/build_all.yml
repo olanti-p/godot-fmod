@@ -13,6 +13,7 @@ env:
   GODOT_ENGINE_VERSION: "4.3"
   GODOT_ENGINE_STAGE: "stable"
   INTEGRATION_VERSION: "1.1"
+  ANDROID_NDK_VERSION: "23.2.8568313"
 
 jobs:
   build-all:
@@ -198,6 +199,9 @@ jobs:
           java-version: "11"
           distribution: "adopt"
           architecture: x64
+
+      - name: Install NDK
+        run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;${{ env.ANDROID_NDK_VERSION }}" --sdk_root=${ANDROID_SDK_ROOT}
 
       - name: Download FMOD library
         if: steps.cache-fmod-lib.outputs.cache-hit != 'true'
