@@ -152,8 +152,6 @@ func detach_instance_from_node(instance: EventInstance) -> void:
 
 func _process(_delta: float) -> void:
 	if studio_system.is_valid():
-		StudioEventEmitter3D.update_active_emitters()
-
 		var i = 0
 		while i < attached_instances.size() && i >= 0:
 			var playback_state: FMODStudioModule.FMOD_STUDIO_PLAYBACK_STATE = (

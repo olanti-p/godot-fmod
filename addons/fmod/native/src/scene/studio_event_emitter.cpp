@@ -3,12 +3,6 @@
 using namespace godot;
 
 template<typename T>
-static inline std::vector<T*>& get_active_emitters() {
-    static std::vector<T*> active_emitters;
-    return active_emitters;
-}
-
-template<typename T>
 bool StudioEventEmitterImpl<T>::_set(const StringName& p_name, const Variant& p_value) {
     String name = String(p_name);
 
@@ -234,14 +228,10 @@ bool StudioEventEmitterImpl<T>::_property_get_revert(const StringName& p_name, V
 template<typename T>
 void StudioEventEmitterImpl<T>::play_instance() {
     bool instance_is_valid = event_instance.is_valid();
-    if (instance_is_valid) {
-        instance_is_valid = event_instance->is_valid();
-    }
 
-    if (instance_is_valid) {
-        if (event->get_oneshot()) {
-            event_instance->release();
-        }
+    if (instance_is_valid && event->get_oneshot()) {
+        event_instance->release();
+        instance_is_valid = false;
     }
 
     if (!instance_is_valid) {
@@ -278,10 +268,6 @@ void StudioEventEmitterImpl<T>::play_instance() {
 
 template<typename T>
 void StudioEventEmitterImpl<T>::stop_instance() {
-    if (trigger_once && has_triggered) {
-        deregister_active_emitter(node);
-    }
-
     if (event_instance.is_valid()) {
         if (event_instance->is_valid()) {
             event_instance->stop(allow_fadeout ? FMOD_STUDIO_STOP_ALLOWFADEOUT : FMOD_STUDIO_STOP_IMMEDIATE);
@@ -299,24 +285,6 @@ bool StudioEventEmitterImpl<T>::is_playing() {
     }
 
     return false;
-}
-
-template<typename T>
-void StudioEventEmitterImpl<T>::register_active_emitter(T* emitter) {
-    auto& active_emitters = get_active_emitters<T>();
-    auto it = std::find(active_emitters.begin(), active_emitters.end(), emitter);
-    if (it == active_emitters.end()) {
-        active_emitters.push_back(emitter);
-    }
-}
-
-template<typename T>
-void StudioEventEmitterImpl<T>::deregister_active_emitter(T* emitter) {
-    auto& active_emitters = get_active_emitters<T>();
-    auto it = std::find(active_emitters.begin(), active_emitters.end(), emitter);
-    if (it != active_emitters.end()) {
-        active_emitters.erase(it);
-    }
 }
 
 template<typename T>
@@ -459,20 +427,22 @@ void StudioEventEmitterImpl<T>::play() {
         lookup();
     }
 
-    is_active = true;
+    play_instance();
+}
 
-    if (event->get_3d() && !event->get_oneshot()) {
-        register_active_emitter(node);
-        update_playing_status(true);
-    } else {
-        play_instance();
+template<typename T>
+void StudioEventEmitterImpl<T>::play_oneshot() {
+    if (event.is_null()) {
+        return;
+    }
+
+    if (!event_description.is_valid()) {
+        lookup();
     }
 }
 
 template<typename T>
 void StudioEventEmitterImpl<T>::stop() {
-    deregister_active_emitter(node);
-    is_active = false;
     stop_instance();
 }
 
@@ -682,7 +652,6 @@ Dictionary StudioEventEmitter2D::get_overridden_parameters() const {
 }
 
 void StudioEventEmitter3D::_bind_methods() {
-    ClassDB::bind_static_method("StudioEventEmitter3D", D_METHOD("update_active_emitters"), &StudioEventEmitter3D::update_active_emitters);
     ClassDB::bind_method(D_METHOD("handle_game_event", "game_event"), &StudioEventEmitter3D::handle_game_event);
     ClassDB::bind_method(D_METHOD("play"), &StudioEventEmitter3D::play);
     ClassDB::bind_method(D_METHOD("stop"), &StudioEventEmitter3D::stop);
@@ -732,24 +701,6 @@ bool StudioEventEmitter3D::_property_can_revert(const StringName& p_name) const 
 
 bool StudioEventEmitter3D::_property_get_revert(const StringName& p_name, Variant& r_property) const {
     return implementation._property_get_revert(p_name, r_property);
-}
-
-void StudioEventEmitter3D::update_active_emitters() {
-    std::vector<StudioEventEmitter2D*>& emitters_2d = get_active_emitters<StudioEventEmitter2D>();
-    for (size_t i = 0; i < emitters_2d.size(); i++) {
-        StudioEventEmitter2D* emitter_2d = emitters_2d[i];
-        if (emitter_2d) {
-            emitter_2d->implementation.update_playing_status();
-        }
-    }
-
-    std::vector<StudioEventEmitter3D*>& emitters_3d = get_active_emitters<StudioEventEmitter3D>();
-    for (size_t i = 0; i < emitters_3d.size(); i++) {
-        StudioEventEmitter3D* emitter_3d = emitters_3d[i];
-        if (emitter_3d) {
-            emitter_3d->implementation.update_playing_status();
-        }
-    }
 }
 
 void StudioEventEmitter3D::_enter_tree() {

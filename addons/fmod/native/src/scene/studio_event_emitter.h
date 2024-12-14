@@ -16,7 +16,6 @@ struct StudioEventEmitterImpl {
     Ref<FmodTypes::FMOD_3D_ATTRIBUTES> attributes = create_ref<FmodTypes::FMOD_3D_ATTRIBUTES>();
     Ref<EventAsset> event;
     bool has_triggered{};
-    bool is_active{};
     bool preload_samples{};
     bool allow_fadeout = true;
     bool trigger_once{};
@@ -34,8 +33,6 @@ struct StudioEventEmitterImpl {
     void stop_instance();
     bool is_playing();
 
-    void register_active_emitter(T* emitter);
-    void deregister_active_emitter(T* emitter);
     void update_playing_status(bool force = false);
 
     void _enter_tree();
@@ -46,6 +43,7 @@ struct StudioEventEmitterImpl {
     void handle_game_event(RuntimeUtils::GameEvent game_event);
 
     void play();
+    void play_oneshot();
     void stop();
     void lookup();
     float get_max_distance();
@@ -115,8 +113,6 @@ protected:
 
 public:
     StudioEventEmitterImpl<StudioEventEmitter3D> implementation;
-
-    static void update_active_emitters();
 
     virtual void _enter_tree() override;
     virtual void _ready() override;
