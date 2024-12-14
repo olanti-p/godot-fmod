@@ -5,8 +5,9 @@ using namespace godot;
 static std::vector<ListenerImpl*> listeners;
 static const int MAX_LISTENERS = 8;
 
-int ListenerImpl::get_num_listener() {
+int ListenerImpl::get_num_listener() const {
     int index = -1;
+
     auto it = std::find(listeners.begin(), listeners.end(), this);
     if (it != listeners.end()) {
         index = std::distance(listeners.begin(), it);
@@ -55,35 +56,40 @@ int ListenerImpl::get_listener_count() {
     return listeners.size();
 }
 
-void ListenerImpl::set_listener_location() {
-    int listener_index = get_num_listener();
-
+void ListenerImpl::set_listener_location(int num_listener) const {
     if (node_2d) {
         Node2D* attenuation_node = Object::cast_to<Node2D>(attenuation_object);
         Variant transform = node_2d->get_global_transform();
 
         if (attenuation_node) {
-            set_listener_attributes(attenuation_node->get_global_transform().get_origin(), listener_index, transform, rigidbody);
+            set_listener_attributes(attenuation_node->get_global_transform().get_origin(), num_listener, transform, rigidbody);
         } else {
-            set_listener_attributes(Variant(), listener_index, transform, rigidbody);
+            set_listener_attributes(Variant(), num_listener, transform, rigidbody);
         }
     } else if (node_3d) {
         Node3D* attenuation_node = Object::cast_to<Node3D>(attenuation_object);
         Variant transform = node_3d->get_global_transform();
         if (attenuation_node) {
-            set_listener_attributes(attenuation_node->get_global_transform().get_origin(), listener_index, transform, rigidbody);
+            set_listener_attributes(attenuation_node->get_global_transform().get_origin(), num_listener, transform, rigidbody);
         } else {
-            set_listener_attributes(Variant(), listener_index, transform, rigidbody);
+            set_listener_attributes(Variant(), num_listener, transform, rigidbody);
         }
     }
 }
 
-void ListenerImpl::set_listener_attributes(const Variant& attenuation, int num_listener, const Variant& transform, Object* rigidbody) {
+void ListenerImpl::set_listener_attributes(const Variant& attenuation, int num_listener, const Variant& transform, Object* rigidbody) const {
     RuntimeUtils::to_3d_attributes_transform_physicsbody(attributes, transform, rigidbody);
 
     FMODStudioModule* fmod_module = FMODStudioModule::get_singleton();
     if (fmod_module) {
         fmod_module->get_studio_system_ref()->set_listener_attributes(num_listener, attributes, attenuation);
+    }
+}
+
+void ListenerImpl::set_listener_weight(int num_listener) const {
+    FMODStudioModule* fmod_module = FMODStudioModule::get_singleton();
+    if (fmod_module) {
+        fmod_module->get_studio_system_ref()->set_listener_weight(num_listener, weight);
     }
 }
 
@@ -117,8 +123,10 @@ void ListenerImpl::_exit_tree() {
 }
 
 void ListenerImpl::_process(double p_delta) {
-    if (get_num_listener() >= 0 && get_num_listener() < MAX_LISTENERS) {
-        set_listener_location();
+    int num_listener = get_num_listener();
+    if (num_listener >= 0 && num_listener < MAX_LISTENERS) {
+        set_listener_location(num_listener);
+        set_listener_weight(num_listener);
     }
 }
 
@@ -127,11 +135,14 @@ void StudioListener2D::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_attenuation_object"), &StudioListener2D::get_attenuation_object);
     ClassDB::bind_method(D_METHOD("set_rigidbody", "object"), &StudioListener2D::set_rigidbody);
     ClassDB::bind_method(D_METHOD("get_rigidbody"), &StudioListener2D::get_rigidbody);
+    ClassDB::bind_method(D_METHOD("set_weight", "listener"), &StudioListener2D::set_weight);
+    ClassDB::bind_method(D_METHOD("get_weight"), &StudioListener2D::get_weight);
     ClassDB::bind_method(D_METHOD("set_num_listener", "listener"), &StudioListener2D::set_num_listener);
     ClassDB::bind_method(D_METHOD("get_num_listener"), &StudioListener2D::get_num_listener);
 
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "attenuation_object", PROPERTY_HINT_NODE_TYPE, "Node2D"), "set_attenuation_object", "get_attenuation_object");
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "rigidbody", PROPERTY_HINT_NODE_TYPE, "PhysicsBody2D"), "set_rigidbody", "get_rigidbody");
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "weight", PROPERTY_HINT_RANGE, "0.0,1.0,0.01"), "set_weight", "get_weight");
     ADD_PROPERTY(
         PropertyInfo(Variant::INT, "num_listener", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY),
         "set_num_listener",
@@ -184,6 +195,14 @@ Object* StudioListener2D::get_rigidbody() const {
     return implementation.rigidbody;
 }
 
+void StudioListener2D::set_weight(float weight) {
+    implementation.weight = weight;
+}
+
+float StudioListener2D::get_weight() const {
+    return implementation.weight;
+}
+
 void StudioListener2D::set_num_listener(int num) {
     notify_property_list_changed();
 }
@@ -198,11 +217,14 @@ void StudioListener3D::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_attenuation_object"), &StudioListener3D::get_attenuation_object);
     ClassDB::bind_method(D_METHOD("set_rigidbody", "object"), &StudioListener3D::set_rigidbody);
     ClassDB::bind_method(D_METHOD("get_rigidbody"), &StudioListener3D::get_rigidbody);
+    ClassDB::bind_method(D_METHOD("set_weight", "listener"), &StudioListener3D::set_weight);
+    ClassDB::bind_method(D_METHOD("get_weight"), &StudioListener3D::get_weight);
     ClassDB::bind_method(D_METHOD("set_num_listener", "listener"), &StudioListener3D::set_num_listener);
     ClassDB::bind_method(D_METHOD("get_num_listener"), &StudioListener3D::get_num_listener);
 
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "attenuation_object", PROPERTY_HINT_NODE_TYPE, "Node3D"), "set_attenuation_object", "get_attenuation_object");
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "rigidbody", PROPERTY_HINT_NODE_TYPE, "PhysicsBody3D"), "set_rigidbody", "get_rigidbody");
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "weight", PROPERTY_HINT_RANGE, "0.0,1.0,0.01"), "set_weight", "get_weight");
     ADD_PROPERTY(
         PropertyInfo(Variant::INT, "num_listener", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY),
         "set_num_listener",
@@ -257,6 +279,14 @@ void StudioListener3D::set_rigidbody(Object* object) {
 
 Object* StudioListener3D::get_rigidbody() const {
     return implementation.rigidbody;
+}
+
+void StudioListener3D::set_weight(float weight) {
+    implementation.weight = weight;
+}
+
+float StudioListener3D::get_weight() const {
+    return implementation.weight;
 }
 
 void StudioListener3D::set_num_listener(int num) {

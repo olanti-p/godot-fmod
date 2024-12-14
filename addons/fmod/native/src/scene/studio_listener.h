@@ -14,14 +14,16 @@ struct ListenerImpl {
     Ref<FmodTypes::FMOD_3D_ATTRIBUTES> attributes = create_ref<FmodTypes::FMOD_3D_ATTRIBUTES>();
     Object* attenuation_object = nullptr;
     Object* rigidbody = nullptr;
+    float weight = 1.0f;
 
-    int get_num_listener();
+    int get_num_listener() const;
 
     void add_listener();
     void remove_listener();
     static int get_listener_count();
-    void set_listener_location();
-    void set_listener_attributes(const Variant& attenuation, int num_listener, const Variant& transform, Object* rigidbody);
+    void set_listener_location(int num_listener) const;
+    void set_listener_attributes(const Variant& attenuation, int num_listener, const Variant& transform, Object* rigidbody) const;
+    void set_listener_weight(int num_listener) const;
     static float distance_to_nearest_listener(const Variant& position);
 
     void _enter_tree();
@@ -51,6 +53,9 @@ public:
     void set_rigidbody(Object* object);
     Object* get_rigidbody() const;
 
+    void set_weight(float weight);
+    float get_weight() const;
+
     void set_num_listener(int num);
     int get_num_listener();
 };
@@ -77,6 +82,9 @@ public:
 
     void set_rigidbody(Object* object);
     Object* get_rigidbody() const;
+
+    void set_weight(float weight);
+    float get_weight() const;
 
     void set_num_listener(int num);
     int get_num_listener();
