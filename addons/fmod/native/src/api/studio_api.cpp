@@ -1269,11 +1269,7 @@ Dictionary EventInstance::get_min_max_distance() const {
 }
 
 bool EventInstance::release() {
-    if (ERROR_CHECK(event_instance->release())) {
-        return true;
-    }
-
-    return false;
+    return ERROR_CHECK(event_instance->release());
 }
 
 bool EventInstance::is_virtual() const {

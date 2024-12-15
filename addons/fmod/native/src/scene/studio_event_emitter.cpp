@@ -268,20 +268,17 @@ void StudioEventEmitterImpl<T>::play_instance() {
 
 template<typename T>
 void StudioEventEmitterImpl<T>::stop_instance() {
-    if (event_instance.is_valid()) {
-        if (event_instance->is_valid()) {
-            event_instance->stop(allow_fadeout ? FMOD_STUDIO_STOP_ALLOWFADEOUT : FMOD_STUDIO_STOP_IMMEDIATE);
-            event_instance->release();
-        }
+    if (event_instance.is_valid() && event_instance->is_valid()) {
+        event_instance->stop(allow_fadeout ? FMOD_STUDIO_STOP_ALLOWFADEOUT : FMOD_STUDIO_STOP_IMMEDIATE);
+        event_instance->release();
+        event_instance.unref();
     }
 }
 
 template<typename T>
 bool StudioEventEmitterImpl<T>::is_playing() {
-    if (event_instance.is_valid()) {
-        if (event_instance->is_valid()) {
-            return event_instance->get_playback_state() != FMOD_STUDIO_PLAYBACK_STOPPED;
-        }
+    if (event_instance.is_valid() && event_instance->is_valid()) {
+        return event_instance->get_playback_state() != FMOD_STUDIO_PLAYBACK_STOPPED;
     }
 
     return false;
