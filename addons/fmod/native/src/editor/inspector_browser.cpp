@@ -270,6 +270,12 @@ void FMODEditorInspectorTree::on_item_collapsed(Object* item) {
 
 void FMODEditorInspector::_bind_methods() {}
 
+void FMODEditorInspector::_on_visibility_changed() {
+    if (is_visible()) {
+        search_text->grab_focus();
+    }
+}
+
 void FMODEditorInspector::initialize() {
     set_name("Window");
     set_title("FMOD Browser");
@@ -303,6 +309,8 @@ void FMODEditorInspector::initialize() {
     tree->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 
     root_vbox->add_child(tree);
+
+    connect("visibility_changed", callable_mp(this, &FMODEditorInspector::_on_visibility_changed));
 }
 
 void FMODEditorInspector::set_editor_scale(float editor_scale) {

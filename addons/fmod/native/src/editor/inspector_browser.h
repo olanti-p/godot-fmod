@@ -62,6 +62,7 @@ protected:
 
 private:
     float editor_scale;
+    void _on_visibility_changed();
 
 public:
     VBoxContainer* root_vbox = nullptr;
