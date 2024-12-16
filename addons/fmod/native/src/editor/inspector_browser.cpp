@@ -493,8 +493,13 @@ void FMODEditorInspectorProperty::on_item_selected() {
 void FMODEditorInspectorProperty::open_popup() {
     add_child(inspector_browser);
 
+    Vector2i mouse_position = DisplayServer::get_singleton()->mouse_get_position();
     inspector_browser->popup(Rect2i(
-        Vector2i(get_global_mouse_position().x - (inspector_browser->get_size().x), get_global_mouse_position().y - (100.0f * editor_scale)), Vector2(1, 1)
+        Vector2i(
+            mouse_position.x - (inspector_browser->get_size().x),
+            mouse_position.y - static_cast<int>(100.0f * editor_scale)
+        ),
+        Vector2(1, 1)
     ));
 }
 
