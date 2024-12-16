@@ -12,7 +12,7 @@ bool StudioEventEmitterImpl<T>::_set(const StringName& p_name, const Variant& p_
         if (event.is_valid()) {
             Dictionary parameters = event->get_parameters();
 
-            String parameter_name = name.replace("parameter_", "");
+            String parameter_name = name.trim_prefix("parameter_");
 
             for (int i = 0; i < parameters.size(); i++) {
                 Ref<ParameterAsset> p = parameters.values()[i];
@@ -73,7 +73,7 @@ bool StudioEventEmitterImpl<T>::_get(const StringName& p_name, Variant& r_ret) c
 
         Dictionary parameters = event->get_parameters();
 
-        String parameter_name = name.replace("parameter_", "");
+        String parameter_name = name.trim_prefix("parameter_");
         Ref<ParameterAsset> default_parameter;
 
         for (int i = 0; i < parameters.size(); i++) {
@@ -197,7 +197,7 @@ bool StudioEventEmitterImpl<T>::_property_get_revert(const StringName& p_name, V
 
         Dictionary parameters = event->get_parameters();
 
-        String parameter_name = name.replace("parameter_", "");
+        String parameter_name = name.trim_prefix("parameter_");
         Ref<ParameterAsset> default_parameter;
 
         for (int i = 0; i < parameters.size(); i++) {

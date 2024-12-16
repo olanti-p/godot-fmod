@@ -32,7 +32,7 @@ bool StudioParameterTrigger::_set(const StringName& p_name, const Variant& p_val
             Ref<ParameterAsset> parameter;
             Dictionary parameters = event->get_parameters();
 
-            String parameter_name = name.replace("parameter_", "");
+            String parameter_name = name.trim_prefix("parameter_");
 
             for (int64_t i = 0; i < parameters.size(); i++) {
                 Ref<ParameterAsset> p = parameters.values()[i];
@@ -76,7 +76,7 @@ bool StudioParameterTrigger::_get(const StringName& p_name, Variant& r_ret) cons
 
         Dictionary parameters = event->get_parameters();
 
-        String parameter_name = name.replace("parameter_", "");
+        String parameter_name = name.trim_prefix("parameter_");
         Ref<ParameterAsset> parameter;
 
         for (int64_t i = 0; i < parameters.size(); i++) {
@@ -199,7 +199,7 @@ bool StudioParameterTrigger::_property_get_revert(const StringName& p_name, Vari
 
         Dictionary parameters = event->get_parameters();
 
-        String parameter_name = name.replace("parameter_", "");
+        String parameter_name = name.trim_prefix("parameter_");
         Ref<ParameterAsset> parameter;
 
         for (int64_t i = 0; i < parameters.size(); i++) {
