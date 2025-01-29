@@ -251,7 +251,7 @@ jobs:
 
   upload-addon:
     runs-on: "ubuntu-24.04"
-    needs: [build-all, android-plugin]
+    needs: build-all
     name: Addon
     steps:
       - name: Checkout code
@@ -279,19 +279,9 @@ jobs:
             mv linux/* addons/fmod/native/lib/
             rm -r linux
           fi
-          if [ -d android-lib ]; then
-            mv android-lib/* addons/fmod/native/lib/
-            rm -r android-lib
-          fi
           if [ -d ios ]; then
             mv ios/* addons/fmod/native/lib/
             rm -r ios
-          fi
-          if [ -d android-plugin ]; then
-            mv android-plugin/plugins/fmod-android-plugin-release.aar android/plugins/
-            mkdir android/plugins/lib
-            mv android-plugin/plugins/lib/fmod.jar android/plugins/lib/
-            rm -r android-plugin
           fi
 
       - name: Clean up addon
